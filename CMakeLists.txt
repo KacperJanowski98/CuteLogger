@@ -5,7 +5,8 @@ SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 PROJECT(CuteLogger)
 
-FIND_PACKAGE(Qt5Core REQUIRED)
+FIND_PACKAGE(Qt6Core REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core5Compat)
 
 ADD_DEFINITIONS(-DCUTELOGGER_LIBRARY)
 
@@ -41,7 +42,10 @@ ENDIF(WIN32)
 SET(library_target CuteLogger)
 
 ADD_LIBRARY(${library_target} SHARED ${sources} ${includes})
-TARGET_LINK_LIBRARIES(${library_target} Qt5::Core)
+TARGET_LINK_LIBRARIES(${library_target} 
+    Qt6::Core
+    Qt6::Core5Compat
+)
 TARGET_INCLUDE_DIRECTORIES(${library_target} PUBLIC include)
 
 INSTALL(TARGETS ${library_target} DESTINATION lib)
@@ -49,8 +53,8 @@ INSTALL(TARGETS ${library_target} DESTINATION lib)
 SET(ENABLE_TESTS OFF CACHE BOOL "Enable building CuteLogger tests")
 IF (ENABLE_TESTS)
   SET(CMAKE_AUTOMOC ON)
-  FIND_PACKAGE(Qt5Test REQUIRED)
+  FIND_PACKAGE(Qt6Test REQUIRED)
 
   ADD_EXECUTABLE(basictest test/basictest.cpp)
-  TARGET_LINK_LIBRARIES(basictest Qt5::Core Qt5::Test CuteLogger)
+  TARGET_LINK_LIBRARIES(basictest Qt6::Core Qt6::Test CuteLogger)
 ENDIF ()
