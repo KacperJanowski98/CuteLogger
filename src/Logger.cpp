@@ -600,8 +600,9 @@ Logger::~Logger()
 
   // Cleanup appenders
   QMutexLocker appendersLocker(&d->loggerMutex);
-  QSet<AbstractAppender*> deleteList(QSet<AbstractAppender*>::fromList(d->appenders));
-  deleteList.unite(QSet<AbstractAppender*>::fromList(d->categoryAppenders.values()));
+  QSet<AbstractAppender*> tempVal((d->categoryAppenders.values()).begin(), (d->categoryAppenders.values()).end());
+  QSet<AbstractAppender*> deleteList((d->appenders).begin(), (d->appenders).end());
+  deleteList.unite(tempVal);
   qDeleteAll(deleteList);
 
   appendersLocker.unlock();
@@ -1032,7 +1033,7 @@ void LoggerTimingHelper::start(const char* msg, ...)
 {
   va_list va;
   va_start(va, msg);
-  m_block = QString().vsprintf(msg, va);
+  m_block = QString().vasprintf(msg, va);
   va_end(va);
 
   m_time.start();
